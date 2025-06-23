@@ -31,7 +31,7 @@ export default async function handler(req, res) {
         res.status(400).send("Invalid JSON (expected { lua: \"code\" })");
       }
     } catch (e) {
-      res.status(400).send("Invalid JSON");
+      res.status(400).send("Invalid JSON bruh");
     }
   } else {
     res.status(405).send("Method not allowed");
