@@ -1,29 +1,28 @@
-let latestCode = ""; 
+let currentCode = ""; 
 
 export default async function handler(req, res) {
   if (req.method === "GET") {
-    
+    // Return the current code as plain text
     res.setHeader("Content-Type", "text/plain");
-    res.status(200).send(latestCode || "");
+    res.status(200).send(currentCode);
   } 
   else if (req.method === "POST") {
     try {
-      const body = await new Promise((resolve, reject) => {
-        let data = "";
-        req.on("data", chunk => { data += chunk; });
-        req.on("end", () => resolve(data));
-        req.on("error", err => reject(err));
+      let body = "";
+      req.on("data", chunk => { body += chunk; });
+      req.on("end", () => {
+        const parsed = JSON.parse(body);
+        if (typeof parsed.code === "string") {
+          currentCode = parsed.code; 
+          res.status(200).send("Updated successfully");
+        } else {
+          res.status(400).send("Invalid JSON (expected { code: \"lua code\" })");
+        }
       });
-
-      const parsed = JSON.parse(body);
-
-      if (typeof parsed.code === "string") {
-        latestCode = parsed.code; // store code in memory
-        res.status(200).send("Updated successfully");
-      } else {
-        res.status(400).send("Invalid JSON (expected { code: \"lua code\" })");
-      }
-    } catch (e) {
+      req.on("error", err => {
+        res.status(500).send("Failed to read request");
+      });
+    } catch {
       res.status(400).send("Invalid JSON");
     }
   } else {
