@@ -2,7 +2,7 @@ let currentCode = "";
 
 export default async function handler(req, res) {
   if (req.method === "GET") {
-    // Return the current code as plain text
+
     res.setHeader("Content-Type", "text/plain");
     res.status(200).send(currentCode);
   } 
