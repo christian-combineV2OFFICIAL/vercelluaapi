@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     try {
       const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
       res.setHeader("Content-Type", "text/plain");
-      res.status(200).send(data.lua);
+      res.status(200).send(data.code || ""); // send `code` instead of `lua`
     } catch (e) {
       res.status(500).send("Failed to read code");
     }
@@ -24,14 +24,14 @@ export default async function handler(req, res) {
 
       const parsed = JSON.parse(body);
 
-      if (typeof parsed.lua === "string") {
-        fs.writeFileSync(filePath, JSON.stringify({ lua: parsed.lua }, null, 2));
+      if (typeof parsed.code === "string") { // check for `code`
+        fs.writeFileSync(filePath, JSON.stringify({ code: parsed.code }, null, 2));
         res.status(200).send("Updated successfully");
       } else {
-        res.status(400).send("Invalid JSON (expected { lua: \"code\" })");
+        res.status(400).send("Invalid JSON (expected { code: \"lua code\" })");
       }
     } catch (e) {
-      res.status(400).send("Invalid JSON bruh");
+      res.status(400).send("Invalid JSON");
     }
   } else {
     res.status(405).send("Method not allowed");
