@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-const filePath = path.resolve("./code.json");
+
 
 export default async function handler(req, res) {
   if (req.method === "GET") {
@@ -37,3 +37,4 @@ export default async function handler(req, res) {
     res.status(405).send("Method not allowed");
   }
 }
+
